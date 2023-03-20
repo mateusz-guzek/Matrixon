@@ -24,6 +24,7 @@ private:
     sf::Text character;
     std::string characters = "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM<>?/[{}])(&*+=";
     std::vector<int> drops;
+    sf::RectangleShape background;
     float row_width;
     bool running;
 
@@ -61,21 +62,21 @@ private:
     }
 
     void draw() {
-        window.clear();
+        //window.clear();
+        window.draw(background);
         //***
         for (int i = 0; i < drops.size(); i++)
         {
-            int y = randomInt(0, window.getSize().y);
-            //printf("%d,%d \n", x, y);
             character.setString(randomCharFromString(characters));
             character.setCharacterSize(randomInt(10, row_width));
             character.setPosition(i*row_width+4, drops[i]);
             window.draw(character);
-            /*
-            drops[i]+=5;
-            if (drops[i] > window.getSize().y) drops[i] = randomInt(-40, -20);
-            printf("%d , %d \n", i, drops[i]);
-            */
+            
+            drops[i]+=8;
+            if (drops[i] > window.getSize().y) {
+                drops[i] = randomInt(0, 400)*-1;
+            }
+            printf("%d , %d \n", window.getSize().y, drops[i]);
         }
 
 
@@ -91,12 +92,15 @@ private:
 public:
     Matrix(int width, int height, float colnum) {
         window.create(sf::VideoMode(width, height, 32), "Matrix", sf::Style::Close);
-        window.setFramerateLimit(20);
+        window.setFramerateLimit(60);
         row_width = (float)window.getSize().x / colnum;
         if (mono_font.loadFromFile("Monocraft.ttf")) printf("udalo si");
-        drops = std::vector<int>(int(colnum), 0);
+        drops = std::vector<int>(int(colnum), 600);
         character.setFont(mono_font);
         character.setFillColor(sf::Color::Green);
+        background.setSize(sf::Vector2f(window.getSize().x, window.getSize().y));
+        background.setFillColor(sf::Color(0, 0, 0, 40));
+        background.setPosition(0,0);
         running = true;
 
     };
